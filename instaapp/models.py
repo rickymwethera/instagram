@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone, timesince
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -8,7 +9,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to='pics/')
     name = models.CharField(max_length=50,blank=True)
     caption = models.CharField(max_length=250, blank=True)	
-    likes =  models.ManyToManyField(User, related_name='likes', blank=True, )
+    # likes =  models.ManyToManyField(User, related_name='likes', blank=True, )
     date_posted = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -62,3 +63,16 @@ class Profile(models.Model):
       
     def __str__(self):
         return f'{self.name.username} Profile'
+
+class Comment(models.Model):
+    comment = models.TextField()
+    image = models.ForeignKey('Image', on_delete=models.CASCADE,related_name='comments',null='True', blank=True )
+    name = models.CharField(max_length=100, blank=True)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='comments',null='True', blank=True )
+    created = models.DateTimeField(auto_now_add=True, null=True)  
+
+    def __str__(self):
+        return f'{self.image.name} comment'
+
+    class Meta:
+        ordering = ["-pk"]

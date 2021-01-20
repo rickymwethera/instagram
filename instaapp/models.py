@@ -3,13 +3,43 @@ from django.utils import timezone, timesince
 from django.contrib.auth.models import User
 
 
+
 # Create your models here.
+class Profile(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+   
+    profile_picture = models.ImageField(upload_to='images/', default='default.png')
+    bio = models.TextField(max_length=500, default="My Bio", blank=True)	  
+    following = models.ManyToManyField(User, related_name='following', blank=True)
+    
+
+    @classmethod
+    def search_by_name(cls, search_term):
+        profiles = cls.objects.filter(name__username__icontains=search_term)
+        return profiles 
+
+    def profile_posts(self):
+        return self.image_set.all()
+
+    def total_follows(self):
+        return self.follows.count()
+
+
+    def get_profiles(cls):
+        users = cls.objects.all()
+        return users
+    
+      
+    def __str__(self):
+        return f'{self.user.username}'
+
 class Image(models.Model):
-    author = models.ForeignKey('Profile', on_delete=models.CASCADE, null='True', blank=True)
+    author = models.ForeignKey(Profile, on_delete=models.CASCADE, null='True', blank=True)
     image = models.ImageField(upload_to='pics/')
     name = models.CharField(max_length=50,blank=True)
     caption = models.CharField(max_length=250, blank=True)	
-    # likes =  models.ManyToManyField(User, related_name='likes', blank=True, )
+    likes =  models.ManyToManyField(User, related_name='likes', blank=True, )
     date_posted = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -36,33 +66,7 @@ class Image(models.Model):
     class Meta:
         ordering = ["-date_posted"]
 
-class Profile(models.Model):
 
-    name = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(upload_to='images/', default='default.png')
-    bio = models.TextField(max_length=500, default="My Bio", blank=True)	  
-    following = models.ManyToManyField(User, related_name='following', blank=True)
-
-
-    @classmethod
-    def search_by_name(cls, search_term):
-        profiles = cls.objects.filter(name__username__icontains=search_term)
-        return profiles 
-
-    def profile_posts(self):
-        return self.image_set.all()
-
-    def total_follows(self):
-        return self.follows.count()
-
-
-    def get_profiles(cls):
-        users = cls.objects.all()
-        return users
-    
-      
-    def __str__(self):
-        return f'{self.name.username} Profile'
 
 class Comment(models.Model):
     comment = models.TextField()

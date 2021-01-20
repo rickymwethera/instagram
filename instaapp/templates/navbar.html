@@ -31,12 +31,19 @@
 }
 </style>
 <nav>
+{% if user.is_authenticated %}
 <ul>
-  <li><a href="#">LOGOUT</a></li>
+  <li><a href="/accounts/logout">LOGOUT</a></li>
   <li><a href="#">Profile</a></li>
   <li><a href="#">Explore</a></li>
   <li><a href="#">Home</a></li>
 </ul>
+{% else %}
+<li>
+    <a class="btn btn-default" href="/accounts/login">LOGIN</a>
+
+</li>
+{%endif%}
 
 </nav>
 

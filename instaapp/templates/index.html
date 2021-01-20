@@ -5,27 +5,31 @@
     .info{
       color: #c72e8c;
     }
+    body{
+        background-color: crimson;
+    }
+    .intro{
+        text-align: center;
+        font-family: 'poppins';
+        color: white;
+    }
     
   </style>
   <div class="container">
-      
-     <div class="status text-center">
-      {% for image in images|slice:'5'%}
-         <div class="each">
-              <a href="{% url 'detail' image.id %}"><img src="{{image.image.url}}" alt=""></a>
-              <p>{{image.name|truncatechars:12}}</p>
-          </div>
-      {% endfor %}
-          
-     </div>
+      <div class="intro">
+      <h1> WELCOME TO INSTAGRAM</h1>
+    </div>
+    <hr>
+    
      <div class="create-post text-center">
        <a href="{% url 'create'%}"><button class="btn btn-info">create post</button> </a>
      </div>
      
      <div class="posts">
-
+        {% if images%}
       {% for image in images %}
       <div class="card ">
+
           <div class="card-header">
            
             <img id="card-img" src="{{image.author.profile_picture.url}}" alt="prof_pic"> <b>{{image.author.name}}</b>
@@ -39,7 +43,7 @@
                      
                       <a  href="#posted">go to post</a><br><hr>
                       <a href="">share</a><br><hr>
-                      <input class="form-control input-lg" type="text" value="{{image.image.url}}" id="{{image.id}}.url">
+                      <input class="form-control input-lg" type="text" value="{{images.image.url}}" id="{{image.id}}.url">
                       <button class="btn " onclick="copyLink('{{image.id}}.url')">copy link</button><br><hr>
                       <button type="button" class="btn btn-secondary text-center" data-dismiss="modal"><b>close</b> </button>
                      
@@ -49,15 +53,29 @@
           </div>
           <div class="card-body">
               <a id="posted" href="{% url 'detail' image.id %}"><img src="{{image.images}}" alt=""></a>
-            
+            <img src="{{image.image.url}}" class="card-img-top" alt="{{image.image}}"height="500px" width="900px"/>
               
             <div class="extra">
             <div class="reactions">
                 
-                <a href="#comment-section"><i class="glyphicon glyphicon-comment"></i></a>
+                <a href="{% url 'comment'%}"><i class="glyphicon glyphicon-comment"></i></a>
                 <a href="#"><i class="glyphicon glyphicon-send"></i></a>
                 <a href="#"><i class="glyphicon glyphicon-bookmark" style="float: right;"></i></a>  
               <!--likes section-->
+              {% if image.likes.id.exists %}
+              <form action="{% url 'like' image.id %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-danger btn-sm" type="submit" name="image_id" value="{{image.id}}"><i class="glyphicon glyphicon-heart-empty"></i></button>
+              </form>
+              {% else %}
+              <form action="{% url 'like' image.id %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-primary btn-sm" type="submit" name="image_id" value="{{image.id}}"><i class="glyphicon glyphicon-heart-empty"></i></button>
+              </form>
+              {% endif %}
+                    <p><b>{{ image.total_likes }} like{{image.total_likes|pluralize}}</b></p>
+                
+            
      
             </div>
             <p class="card-text"><b>{{image.author.name}}:</b> {{image.caption}}</p>
@@ -84,9 +102,9 @@
         {% endfor %}
      
   </div>
-  
+  {% else %}
   <p class="text-center info"><b>Navigate to the explore <i class="glyphicon glyphicon-globe"></i> tab and start following people to see their posts!</b></p>
-  
+  {% endif %}
   
   </div>
   

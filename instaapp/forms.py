@@ -8,11 +8,7 @@ class PostForm(forms.ModelForm):
 
         model = Image
 
-        fields = [
-            "image",
-            "name",
-            "caption",
-        ]
+        exclude = ['posted_date', 'author']
 
 class CommentForm(forms.ModelForm):
 

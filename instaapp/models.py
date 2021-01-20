@@ -80,3 +80,18 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ["-pk"]
+
+
+    @classmethod
+    def update_comment(cls,id,new_comment):
+        cls.objects.filter(id=id).update(comment = new_comment)
+        
+    @classmethod
+    def get_comments(cls,id):
+        comments = cls.objects.filter(image__id=id)
+        return comments
+    
+
+    @classmethod
+    def delete_comment(cls,id):
+        cls.objects.filter(id).delete()

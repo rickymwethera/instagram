@@ -1,0 +1,87 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+{{block.super}}
+<style>
+  body{
+    margin-top: 60px;
+  }
+  .main-pic{
+    width: 100%;
+    height: 100%;
+  }
+  #comment-section{
+    padding: 10px;
+  }
+</style>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+<div class="card ">
+    <div class="card-header">
+      <img id="card-img" src="{{image.author.profile_picture.url}}" alt=""><b>{{image.author.name}}</b>
+      {% if image.author.name == user %}
+      <a class="btn btn-danger" style="float: right;" href="{% url 'delete' image.id %}"><i class="glyphicon glyphicon-trash"></i></a> 
+      {% endif %}  
+     
+    </div>
+    <div class="card-body">
+        <img class="main-pic" src="{{image.image.url}}" alt="">
+      
+      <h5 class="card-title"><b>{{image.name}}</b></h5>
+      <p class="card-text">{{image.caption}}</p>
+      <!--likes section-->
+      {% if liked %}
+      <form action="{% url 'like' image.id %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-danger btn-sm" type="submit" name="image_id" value="{{image.id}}"><i class="glyphicon glyphicon-heart-empty"></i></button>
+      </form>
+      {% else %}
+      <form action="{% url 'like' image.id %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-primary btn-sm" type="submit" name="image_id" value="{{image.id}}"><i class="glyphicon glyphicon-heart-empty"></i></button>
+      </form>
+      {% endif %}
+    
+      
+    
+    </div>
+    <div class="card-footer text-muted">
+        <div class="row">
+            <div class="col-md-10">
+            <b>{{ total_likes }} likes</b>
+            </div>
+            <div class="col-md-2">
+           
+            
+          </div>
+        </div>
+    </div>
+  </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card ">
+      <div class="card-header text-center"><b>comments</b> </div>
+      <p class="text-muted text-center">{{image.comments.count}} comment{{image.comments.count|pluralize}}</p>
+      <div id="comment-section">
+        {% for comment in image.comments.all%}
+          <p><b>{{comment.user.name}}</b> {{comment.comment}}</p>
+      
+         {% endfor %}
+      
+      
+       
+        <form class="comment-form" action="" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{form|crispy}}
+          <input type="submit" value="comment" class="btn btn-primary">
+        </form>
+        </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,5 +1,94 @@
 {% extends "base.html"%}
-
+{% load bootstrap3 %}
 {% block content%}
-<h2>get in</h2>
+<style>
+    .info{
+      color: #c72e8c;
+    }
+    
+  </style>
+  <div class="container">
+      
+     <div class="status text-center">
+      {% for image in images|slice:'5'%}
+         <div class="each">
+              <a href="{% url 'detail' image.id %}"><img src="{{image.image.url}}" alt=""></a>
+              <p>{{image.name|truncatechars:12}}</p>
+          </div>
+      {% endfor %}
+          
+     </div>
+     <div class="create-post text-center">
+       <a href="{% url 'create'%}"><button class="btn btn-info">create post</button> </a>
+     </div>
+     
+     <div class="posts">
+
+      {% for image in images %}
+      <div class="card ">
+          <div class="card-header">
+           
+            <img id="card-img" src="{{image.author.profile_picture.url}}" alt="prof_pic"> <b>{{image.author.name}}</b>
+           
+              <a class="more" href="#modalCenter" data-toggle="modal"><i class="glyphicon glyphicon-option-horizontal"></i></a>
+              <!--modal-->
+              <div class=" modal fade" id="modalCenter"     tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                  <div class="  modal-dialog modal-sm">
+                    <div class="modal-content">
+                      
+                     
+                      <a  href="#posted">go to post</a><br><hr>
+                      <a href="">share</a><br><hr>
+                      <input class="form-control input-lg" type="text" value="{{image.image.url}}" id="{{image.id}}.url">
+                      <button class="btn " onclick="copyLink('{{image.id}}.url')">copy link</button><br><hr>
+                      <button type="button" class="btn btn-secondary text-center" data-dismiss="modal"><b>close</b> </button>
+                     
+                    </div>
+                  </div>
+                </div>
+          </div>
+          <div class="card-body">
+              <a id="posted" href="{% url 'detail' image.id %}"><img src="{{image.images}}" alt=""></a>
+            
+              
+            <div class="extra">
+            <div class="reactions">
+                
+                <a href="#comment-section"><i class="glyphicon glyphicon-comment"></i></a>
+                <a href="#"><i class="glyphicon glyphicon-send"></i></a>
+                <a href="#"><i class="glyphicon glyphicon-bookmark" style="float: right;"></i></a>  
+              <!--likes section-->
+     
+            </div>
+            <p class="card-text"><b>{{image.author.name}}:</b> {{image.caption}}</p>
+            <p class="text-muted">{{image.comments.count}} comment{{image.comments.count|pluralize}}</p>
+            <div id="comment-section">
+              {% for comment in image.comments.all|slice:'2' %}
+                <p><b>{{comment.user.name}}</b> {{comment.comment}}</p>
+            
+               {% endfor %}
+            </div>
+            
+          
+          
+          <small class="text-muted">{{image.date_posted|timesince}} ago</small>
+          </div>
+          <div class="card-footer text-muted">
+           
+              <a href="{% url 'detail' image.id%}">comment</a>
+           
+          </div>
+         
+        </div>
+      </div>
+        {% endfor %}
+     
+  </div>
+  
+  <p class="text-center info"><b>Navigate to the explore <i class="glyphicon glyphicon-globe"></i> tab and start following people to see their posts!</b></p>
+  
+  
+  </div>
+  
+  
 {% endblock %}

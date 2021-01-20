@@ -12,7 +12,7 @@ class ProfileTestClass(TestCase):
     test class for Profile model
     '''
     def setUp(self):
-        self.user = User.objects.create_user("vector", "pass")
+        self.user = User.objects.create_user("ricky", "pass")
         self.profile_test = Profile(profile_picture='images/default.png',
                                             bio="test bio",
                                             user=self.user)
@@ -28,7 +28,7 @@ class ImageTestClass(TestCase):
 
     def setUp(self):
 
-        self.user = User.objects.create_user("vector", "pass")
+        self.user = User.objects.create_user("ricky", "pass")
 
         self.new_profile = Profile(profile_picture='images/default.png',bio="test bio",
                                      user=self.user)
@@ -58,7 +58,7 @@ class CommentTestClass(TestCase):
     """Test class for Comment Model"""
 
     def setUp(self):
-        self.new_user = User.objects.create_user("vector", "pass")
+        self.new_user = User.objects.create_user("ricky", "pass")
 
         self.new_profile = Profile(profile_picture='images/default.png',
                                      bio="test bio",
